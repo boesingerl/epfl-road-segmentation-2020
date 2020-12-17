@@ -97,7 +97,7 @@ This notebook showcases the training / loading of multiple level 5 models in ord
 
 ### The Weighted Level 7 notebook
 
-This notebook showcases the training of a level 7 model which uses a weighted loss instead of binary cross entropy.
+This notebook showcases the training of a level 7 model which uses a weighted loss instead of binary cross entropy. That is, instead of giving equal weights to roads and background in the computation of the loss, we tried giving more or less weights, in order to tacke the class imbalance problem.
 
 ## The file libraries
 
