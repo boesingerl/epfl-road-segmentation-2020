@@ -76,11 +76,19 @@ These notebooks correspond to the models which we've considered to be noteworthy
 
 ### The Level 7 notebook
 
-### The AveringModels notebook
+The level 7 notebook is most straightforward one, it simply showcases a normal level 7 model.
+
+### The AveragingModels notebook
+
+This notebook showcases the training / loading of multiple level 5 models in order to average out the predictions, as an ensemble method.
+
+### The Weighted Level 7 notebook
+
+This notebook showcases the training of a level 7 model which uses a weighted loss instead of binary cross entropy.
 
 ## The file libraries
 
-In order to tidy up code inside the notebooks, we chose to move all shared / boilerplate code inside different python files which we use as libraries.
+In order to tidy up code inside the notebooks, we chose to move all shared / boilerplate code inside different python files which we use as libraries (listed under the libs folder).
 
 ### image_gen.py
 
