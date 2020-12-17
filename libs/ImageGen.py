@@ -6,7 +6,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from skimage.util import view_as_blocks
 
 def random_crop(img_x, img_y, random_crop_size, seed):
-
+  """Given two images and a crop size, returns a tuple of cropped patches of given size, selected at the saame position in both images"""
   np.random.seed(seed)    
 
   assert img_x.shape[:2] == img_y.shape[:2]
@@ -37,6 +37,7 @@ def crop_generator(xy_gen, crop_length, seed):
       yield batch_x_crops, batch_y_crops
 
 def force_batch_size_gen(xy_gen, batch_size):
+  """Given a generator of x,y samples, creates a generator that returns only images that have the right batch size"""
   while True:
     x,y = next(xy_gen)
     if(x.shape[0] == batch_size):
@@ -44,9 +45,11 @@ def force_batch_size_gen(xy_gen, batch_size):
 
     
 def mask_to_block(mask, mask_size = (256,256), block_size = (16,16)):
+  """Returns a view on the given mask as blocks, by averaging values in the mask"""
   return view_as_blocks(mask.reshape(mask_size), block_size).mean(axis=(2,3))
 
 def block_generator(xy_gen, threshold=0.25):
+  """Given a generator of x,y samples, creates a generator that returns images as blocks, by using mask_to_block and a given threshold"""
   while True:
     batch_x, batch_y = next(xy_gen)
     new_length = batch_y.shape[1]//16
@@ -99,12 +102,15 @@ class ImageGenerator:
     
 
   def get_normal_generator(self):
+    """Returns train and validation generators by appling augments"""
     return self.train_generator, self.valid_generator
 
   def get_crop_generator(self, crop_length, seed):
+    """Returns a crop generator, applying crop_generator function on the get_normal_generator"""
     return crop_generator(self.train_generator, crop_length, seed), crop_generator(self.valid_generator, crop_length, seed)
 
   def get_block_generator(self, crop_length=None, crop_seed=None):
+    """Returns a crop generator, applying crop_generator function on the get_normal_generator or get_crop_generator (if given a crop_length)"""
     if crop_length is not None:
       train,valid = self.get_crop_generator(crop_length, crop_seed)
     else:

@@ -2,19 +2,23 @@ from skimage.util.shape import view_as_windows
 from scipy.sparse import coo_matrix
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 def windows_from_image(img, window_size, stride):
+    """Returns window views on the given image, of size and stride given"""
     color_dim = (img.shape[2],) if img.ndim == 3 else ()
     windows = view_as_windows(np.squeeze(img), (window_size,window_size) + color_dim,stride)
     return windows.reshape((-1, window_size, window_size) + color_dim), windows.shape[0]
 
 def plot_windows(windows):
+    """Used for debug, plots the provided windows as plt subplots """
     fig, axs = plt.subplots(nrows=rows,ncols=cols,figsize=(10,10))
     for i in range(rows):
         for j in range(cols):
             axs[i,j].imshow(windows[i][j],cmap='gray', vmin=0, vmax=255)
 
 def image_from_windows(windows,rows, block_size, stride,original_shape):
+    """Recovers the image from the windows given (inverse of windows_from_image)"""
     offsets = [(np.repeat(np.arange(i*stride,i*stride+block_size),block_size).reshape((block_size,block_size)),
               np.repeat(np.arange(j*stride,j*stride+block_size),block_size).reshape((block_size,block_size)).T) for i in range(rows) for j in range(rows) ]
 
@@ -24,20 +28,24 @@ def image_from_windows(windows,rows, block_size, stride,original_shape):
     return (np.sum(images) / np.sum(ones))
 
 def pred_to_uint8(pred):
+    """Converts float prediction to uint8"""
     return (255*pred).astype('uint8')
     
 def predict_from_image(model, img, window_size=256, stride=32):
+    """Gets window views on image, predicts roads pixel-wise all those windows, aggregates result of predictions back together to predict a complete image"""
     win,rows = windows_from_image(img,window_size,stride)
-    predicted = model.predict(win)
+    predicted = model.predict(win, batch_size=16)
     back_pred = image_from_windows(predicted,rows,window_size,stride,(img.shape[0],img.shape[0]))
     return pred_to_uint8(back_pred)
 
 def pad_border(img, adj_border_size):
+    """Pads an image with zeros"""
     left_bot_b = int(adj_border_size // 2)
     right_top_b = int(adj_border_size-left_bot_b)
     return cv2.copyMakeBorder(img, right_top_b, left_bot_b, left_bot_b, right_top_b, cv2.BORDER_CONSTANT, value=[0,0,0])
 
 def rotate_image(mat, angle):
+    """Applies affine rotation to images"""
     height, width = mat.shape[:2] # image shape has 3 dimensions
     image_center = (width/2, height/2) # getRotationMatrix2D needs coordinates in reverse order (width, height) compared to shape
 
@@ -61,6 +69,7 @@ def rotate_image(mat, angle):
 
 
 def predict_from_image_rotated(model, img, window_size=256, stride=32, rotations=[*(np.arange(8) * 45)], pad=True):
+    """Gets window views on image, predicts roads pixel-wise all those windows with applying given rotations, with or without padding depending on argument,and then aggregates result of predictions back together to predict a complete image"""
     num_rot = len(rotations)
     pre_agg_imgs = np.zeros((num_rot,img.shape[0],img.shape[1]))
     border_size = window_size/2
@@ -83,7 +92,7 @@ def predict_from_image_rotated(model, img, window_size=256, stride=32, rotations
         win,rows = windows_from_image(pad_rot_img, window_size, stride)
 
         # predict the windows
-        predicted = model.predict(win)
+        predicted = model.predict(win, batch_size=16)
 
         # reconstruct image
         back_pred = image_from_windows(predicted,rows,window_size,stride,(pad_rot_img.shape[0],pad_rot_img.shape[0]))

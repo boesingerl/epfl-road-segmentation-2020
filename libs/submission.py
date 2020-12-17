@@ -10,6 +10,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 
 def load_test_images(folder):
+    """Loads all test images from the given directory"""
     if os.path.isdir(folder):
         test_datagen = ImageDataGenerator()
         test_image_generator = test_datagen.flow_from_directory(folder, target_size=(608, 608), class_mode=None, shuffle=False, batch_size = 50)
@@ -21,6 +22,7 @@ def load_test_images(folder):
         raise RuntimeError("Path is not a folder")
 
 def save_predictions_to_folder(folder, predictions):
+    """Saves all predictions (list of images) to given folder"""
     if os.path.isdir(folder):
         for pred,name in zip(predictions, range(1,1+len(predictions))):
             name = "{:03d}.png".format(name)
@@ -28,8 +30,8 @@ def save_predictions_to_folder(folder, predictions):
     else:
         raise RuntimeError("Path is not a folder")
         
-# assign a label to a patch
 def patch_to_label(patch, foreground_threshold):
+    """Assign a label to a patch"""
     df = np.mean(patch)
     if df > foreground_threshold:
         return 1
@@ -57,6 +59,7 @@ def masks_to_submission(submission_filename,foreground_threshold, *image_filenam
             
            
 def create_submission(folder, submission_filename,foreground_threshold=0.25):
+    """Creates a submission given ordered predictions"""
     if os.path.isdir(folder):
         image_filenames = []
         for i in range(1, 51):
@@ -66,13 +69,13 @@ def create_submission(folder, submission_filename,foreground_threshold=0.25):
     else:
         raise RuntimeError("Path is not a folder")
         
-
-# Convert an array of binary labels to a uint8
 def binary_to_uint8(img):
+    """Converts binary labels to uint8"""
     rimg = (img * 255).round().astype(np.uint8)
     return rimg
 
 def reconstruct_from_labels(label_file, image_id, h=16, w=16, nc=3, img_size=600.0):
+    """Reconstruct images from label files"""
     imgwidth = int(math.ceil((img_size/w))*w)
     imgheight = int(math.ceil((img_size/h))*h)
     im = np.zeros((imgwidth, imgheight), dtype=np.uint8)
@@ -104,6 +107,7 @@ def reconstruct_from_labels(label_file, image_id, h=16, w=16, nc=3, img_size=600
     return Image.fromarray(im)
     
 def plot_submission(label_file):
+    """Plots reconstructed submissions when provided a submission file, using reconstruct_from_labels"""
     fig, axs = plt.subplots(nrows=5,ncols=10,figsize=(20,10))
     for i in range(0,10):
       for j in range(0,5):

@@ -4,6 +4,7 @@ from tensorflow.keras import layers
 from tensorflow.keras.optimizers import Adam
 
 def last_layers(input_tensor):
+    """Post processing CNN that fills segments, see https://github.com/hepesu/LineCloser"""
     x = Conv2D(24, 5, strides=2, padding='same')(input_tensor)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
@@ -72,7 +73,7 @@ def last_layers(input_tensor):
 
 def unet(input_size = (256,256,3), post_processing=True,batch_size=16, levels=5, activation='relu', kernel_initializer='he_normal', 
          dropout_p=0.2, dropout_max_level_only=True, bn_pos1 = True, bn_pos2 = True, optimizer=Adam(lr = 1e-4), loss='binary_crossentropy', metrics=['accuracy'], pretrained_weights = None):
-    
+    """Returns a U-Net model from given parameters, with ability to specify input size, levels, pretrained weights, optimizer, callbacks, and using a post-processing CNN, using the last_layers function"""  
     inputs = keras.Input(input_size, batch_size,name='input')
     o = inputs
     levels = [2**(6+i) for i in range(levels)]
