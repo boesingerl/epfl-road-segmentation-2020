@@ -77,7 +77,7 @@ It is divided into parts which are :
 
 - Selecting Data Augmentation
 - Selecting the level of our U-Net
-- Best size of the Image Size (sliding window size)
+- Best Input Size (and sliding window size)
 - Best stride for our sliding window
 - Trying out weighted loss
 - Averaging models
@@ -215,7 +215,7 @@ It can also be customized by passing it custom weights.
 ### augmentation.py
 
 - apply_augmentation
-augments the provided images by applying rotations of 0,90,180,270 degrees and flips
+Augments the provided images by applying rotations of 0,90,180,270 degrees and flips
 
 ----
 
