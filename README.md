@@ -2,7 +2,7 @@
 
 ## Libraries used and Execution Guide
 
-All the notebooks included were run using google colab, we thus recommend google colab for their execution. Should a local alternative be desirable, however the following versions of libraries are required:
+All the notebooks included were run using google colab, we thus recommend google colab for their execution. Should a local alternative be desirable, however the following versions of libraries, along with a version of python of 3.6.9 (the one present on google colab) are required:
 
 ```
 imgaug==0.2.9
