@@ -36,6 +36,19 @@ In order to run all our experiments with good GPUs, we chose to use the Google C
 - When running a notebook, make sure that the Drive mount folder shows our code folder inside /content/gdrive/MyDrive, otherwise, the shortcut either has the wrong name, or is at the wrong location
 - Sometimes colab allocates you worse GPUs than necessary, so you may need to reconnect to another machine if you try to train a model and get an OutOfMemory error when allocating Tensors.
 
+Here is a description of everything in our Code Folder :
+- archive : We kept most previous versions of our notebooks for completeness in this folder
+- libs : All python libraries are kept under this folder (even those provided)
+- models : All pretrained weights and models are in this folder
+- submissions : We kept csv files for all important submissions in this folder.
+- test_predictions : We kept image predictions for all important submissions in this folder
+- test_set_images : The folder of test images
+- training : The folder of training images
+- validation_predictions : The image predictions that are done on our validation sets in our Experiments notebook are kept here.
+- vis_postprocessing : Figures appearing in the report relating to postprocessing.
+- ipynb files : All notebooks are described later
+- run.py file: Same as the run.py in the github classroom folder, here for ease of use of the Running.ipynb notebook
+
 ## The run.py file
 
 The run.py performs the following steps :
