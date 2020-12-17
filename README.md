@@ -207,7 +207,7 @@ Selects the best threshold with respect to f1-score from the given (threshold, t
 - generate_F1_weights
 Generates the custom weights for the average by giving more importance to the models with a higher F1 score
 The importance of the F1_score can be customized by giving a minimum weight to all models with cst_weight_prc
--average_prediction
+- average_prediction
 Takes a array of array of predictions and computes the mean item by item. The average can either be fair if no weights are set.
 It can also be customized by passing it custom weights.
 
