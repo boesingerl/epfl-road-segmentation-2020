@@ -1,7 +1,20 @@
-# ML Project : Road Segmentation
+# EPFL Road Segmentation 2020
+
+<img src="https://user-images.githubusercontent.com/32189761/135729218-8829924c-c89b-490f-87e7-0befc8adcdf6.png" alt="Segmentation" height="200px"/>
+
+This repository contains the code used to create our submission to the 2020 edition of the [EPFL Aicrowd Road Segmentation challenge](https://www.aicrowd.com/challenges/epfl-ml-road-segmentation).
+
+In order to understand better what techniques we used, the best way is to read through the **Experiments.ipynb** notebook, which explains our usage of U-Nets, our selection of Data Augmentation, the Sliding Window technique we used to provide robustness, and different types of post processing methods attempted.
+
+We placed 12th on the [Aicrowd leaderboard](https://www.aicrowd.com/challenges/epfl-ml-road-segmentation/leaderboards?challenge_round_id=695) ! This means that our solution definitely could use improvements, but we are satisfied of it.
 
 ## Libraries used and Execution Guide
 
+
+<details>
+  <summary>Click to show / hide</summary>
+<br>
+  
 All the notebooks included were run using google colab, we thus recommend google colab for their execution. Should a local alternative be desirable, however the following versions of libraries, along with a version of python of 3.6.9 (the one present on google colab) are required:
 
 ```
@@ -27,7 +40,13 @@ Further, we cannot guarantee that any GPU can execute the same training as on co
 
 In order to run the run.py script, you will also need the wget library.
 
+</details>
+
 ## Our usage of Google Colab
+
+<details>
+  <summary>Click to show / hide</summary>
+<br>
 
 In order to run all our experiments with good GPUs, we chose to use the Google Colab platform, thus, all our notebooks are hosted there. We also copied them to the github classroom for completeness (looking at code / outputs without running cells), but, since they all make use of google colab and google drive, to run them like we do, you need to follow these steps :
 
@@ -49,7 +68,15 @@ Here is a description of everything in our Code Folder :
 - ipynb files : All notebooks are described later
 - run.py file: Same as the run.py in the github classroom folder, here for ease of use of the Running.ipynb notebook
 
-## The run.py file
+</details>
+
+## Documentation of our solution
+
+<details>
+  <summary>Click to show / hide</summary>
+<br>
+  
+### The run.py file
 
 The run.py performs the following steps :
 
@@ -67,7 +94,7 @@ There are some parameters you can set in the run.py, they are :
 
 In order to run it using Colab, we provided you with a notebook called Running.ipynb in the aforementioned code folder. It simply installs the wget library and runs the run.py folder, to create the submission.
 
-## The Experiments Notebook
+### The Experiments Notebook
 
 The `Experiments.ipynb` notebook combines most of our experiments attempted on this project. 
 
@@ -83,27 +110,27 @@ It is divided into parts which are :
 - Averaging models
 - Post-Processing methods to use
 
-## The "Model" Notebooks
+### The "Model" Notebooks
 
 These notebooks correspond to the models which we've considered to be noteworthy. They showcase how we train each model.
 
-### The Level 7 notebook
+#### The Level 7 notebook
 
 The level 7 notebook is most straightforward one, it simply showcases a normal level 7 model.
 
-### The AveragingModels notebook
+#### The AveragingModels notebook
 
 This notebook showcases the training / loading of multiple level 5 models in order to average out the predictions, as an ensemble method.
 
-### The Weighted Level 7 notebook
+#### The Weighted Level 7 notebook
 
 This notebook showcases the training of a level 7 model which uses a weighted loss instead of binary cross entropy. That is, instead of giving equal weights to roads and background in the computation of the loss, we tried giving more or less weights, in order to tacke the class imbalance problem.
 
-## The file libraries
+### The file libraries
 
 In order to tidy up code inside the notebooks, we chose to move all shared / boilerplate code inside different python files which we use as libraries (listed under the libs folder).
 
-### image_gen.py
+#### image_gen.py
 
 - random_crop
 Given two images and a crop size, returns a tuple of cropped patches of given size, selected at the saame position in both images
@@ -124,14 +151,14 @@ Given augmentation parameters, directories for input, and target images, and ext
   - get_block_generator
     - Returns a crop generator, applying crop_generator function on the get_normal_generator or get_crop_generator (if given a crop_length)
 
-### models.py
+#### models.py
 
 - last_layers
 Post processing CNN that fills segments
 - unet
 Returns a U-Net model from given parameters, with ability to specify input size, levels, pretrained weights, optimizer, callbacks, and using a post-processing CNN, using the last_layers function
 
-### sliding_windows.py
+#### sliding_windows.py
 
 - windows_from_image
 Returns window views on the given image, of size and stride given
@@ -150,7 +177,7 @@ Applies affine rotation to images
 - predict_from_image_rotated
 Gets window views on image, predicts roads pixel-wise all those windows with applying given rotations, with or without padding depending on argument,and then aggregates result of predictions back together to predict a complete image
 
-### post_process.py
+#### post_process.py
 
 - morphological
 Applies the given cv2 morphological operations to the image, using column, row, and square kernels sequentially
@@ -165,7 +192,7 @@ Returns all found lines using the Hough transform for lines and given parameters
 - keep_large_area
 Keeps only blobs of large enough area, with threshold as argument
 
-### submission.py
+#### submission.py
 
 This file combines some of the provided functions, and adds other related to creating a submission.
 
@@ -188,7 +215,7 @@ Provided function : Reconstruct images from label files
 - plot_submission
 Plots reconstructed submissions when provided a submission file, using reconstruct_from_labels
 
-### threshold.py
+#### threshold.py
 
 - middle_threshold
 Thresholds an image using the value between the min and max pixel values of the image
@@ -202,7 +229,7 @@ Applies a threshold function to the predictions, and computes the f1 score with 
 Selects the best threshold with respect to f1-score from the given (threshold, threshold_func) pairs, predictions and target images
 
 
-### averaging.py
+#### averaging.py
 
 - generate_F1_weights
 Generates the custom weights for the average by giving more importance to the models with a higher F1 score
@@ -212,10 +239,12 @@ Takes a array of array of predictions and computes the mean item by item. The av
 It can also be customized by passing it custom weights.
 
 
-### augmentation.py
+#### augmentation.py
 
 - apply_augmentation
 Augments the provided images by applying rotations of 0,90,180,270 degrees and flips
+
+</details>
 
 ----
 
